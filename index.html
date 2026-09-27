@@ -1,54 +1,355 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0a1010">
-<title>إشارة — مختبر حركة اليد</title><link rel="stylesheet" href="style.css">
-</head>
-<body>
-<svg class="svg-defs" xmlns="http://www.w3.org/2000/svg"><defs>
-<symbol id="i-hand" viewBox="0 0 24 24"><path d="M8 12V5a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-6a1.5 1.5 0 0 1 3 0v7-4a1.5 1.5 0 0 1 3 0v7c0 5-3 7-7 7-3 0-5-2-7-5l-3-4a1.6 1.6 0 0 1 2.5-2L8 14"/></symbol>
-<symbol id="i-camera" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="3"/><path d="m8 6 1-3h6l1 3"/><circle cx="12" cy="13" r="4"/></symbol>
-<symbol id="i-play" viewBox="0 0 24 24"><path d="m9 5 10 7-10 7z"/></symbol>
-<symbol id="i-switch" viewBox="0 0 24 24"><path d="M4 8h16l-4-4M20 16H4l4 4"/></symbol>
-<symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></symbol>
-<symbol id="i-expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
-<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></symbol>
-</defs></svg>
-<div class="app-shell">
-<header class="header"><a class="brand" href="./"><span class="brand-mark"><svg><use href="#i-hand"/></svg></span><span>إشارة<span class="brand-en">ISHARA</span></span></a><nav aria-label="التنقل"><a class="nav-active" href="#workspace">مختبر التتبّع</a><a href="#guide">دليل الإشارات</a></nav><span class="header-tag"><span></span> يعمل داخل متصفحك</span></header>
-<main>
-<section class="intro"><div><div class="eyebrow"><span class="tiny-line"></span> تفاعل طبيعي. بدون لمس.</div><h1>كل حركة، <span>لها معنى.</span></h1><p>حوّل كاميرتك إلى مساحة تفاعلية. تتبّع يدك، واكتشف إشاراتك لحظة بلحظة.</p></div><div class="intro-number"><span>21</span><div>نقطة تتبّع<br><strong>إمكانيات بلا حدود</strong></div></div></section>
-<section class="camera-access" aria-label="إذن الكاميرا">
-<div class="access-copy"><svg><use href="#i-shield"/></svg><div><strong>كاميرا حقيقية، بإذنك فقط</strong><p>اضغط «السماح وتشغيل الكاميرا» ثم اختار «سماح / Allow» في رسالة المتصفح. لو الإذن محفوظ، البث هيفتح مباشرة.</p><p id="embedWarning" hidden>أنت داخل معاينة مضمّنة؛ لو طلب الإذن ما ظهرش، افتح الموقع نفسه في تبويب مستقل. معاينة الملف لا تتيح الكاميرا.</p></div></div>
-<div class="access-actions"><span id="permissionState" role="status">الإذن: لم يُطلب بعد</span><a id="openExternal" class="button secondary compact" target="_blank" rel="noopener noreferrer" hidden>افتح الموقع في تبويب مستقل ↗</a></div>
-</section>
-<section class="workspace" id="workspace" aria-label="مختبر تتبع اليد">
-<div class="camera-column">
-<div class="panel camera-panel" id="cameraPanel">
-<div class="panel-toolbar"><div class="panel-title"><svg><use href="#i-camera"/></svg> مساحة التتبّع <span class="small-pill">LIVE VIEW</span></div><div class="status" id="status"><span></span><b id="statusText">الكاميرا غير مفعّلة</b></div></div>
-<div class="stage" id="stage"><canvas id="canvas" aria-label="عرض الكاميرا ونقاط تتبع اليد"></canvas><video id="video" autoplay muted playsinline hidden></video>
-<div class="stage-corners"><i></i><i></i><i></i><i></i></div>
-<div class="empty-state" id="emptyState"><div class="hand-orbit"><span class="orbit-dot"></span><svg><use href="#i-hand"/></svg></div><div class="scan-label">READY WHEN YOU ARE</div><h2>المساحة جاهزة لحركتك</h2><p>هنطلب إذن الكاميرا من المتصفح أولًا.<br>بعد السماح، هتشوف بث كاميرتك الحقيقي هنا.</p><button id="startCenter" class="button primary"><svg><use href="#i-camera"/></svg> السماح وتشغيل الكاميرا <svg class="arrow"><use href="#i-arrow"/></svg></button><button id="demoCenter" class="text-button">معندكش كاميرا؟ جرّب العرض التوضيحي <span>↗</span></button></div>
-<div class="camera-badge" id="cameraBadge" hidden><span></span><b>بث مباشر · كاميرا فعلية</b><small id="cameraInfo"></small></div><div class="demo-badge" id="demoBadge" hidden>عرض توضيحي · بيانات محاكاة</div><div class="stage-tip" id="stageTip" hidden>ارفع يد واحدة داخل الإطار</div>
-<div class="stage-bottom"><span class="stage-coordinates">HAND TRACKING / 01</span><button id="fullscreen" class="icon-button" title="ملء الشاشة" aria-label="ملء الشاشة"><svg><use href="#i-expand"/></svg></button></div>
-</div>
-<div class="camera-controls"><button id="startButton" class="button primary compact"><svg><use href="#i-camera"/></svg><span>السماح وتشغيل الكاميرا</span></button><button id="switchCamera" class="button secondary compact" title="تبديل بين الكاميرا الأمامية والخلفية" disabled><svg><use href="#i-switch"/></svg><span>تبديل الكاميرا</span></button><div class="fps"><span id="fpsValue">—</span> FPS</div></div>
-</div>
-<div id="message" class="message" role="status" hidden></div><button id="retryModel" class="button secondary compact" hidden>إعادة محاولة تحميل تتبّع اليد</button>
-<div class="privacy"><svg><use href="#i-shield"/></svg><p><strong>خصوصيتك أولًا.</strong> تحليل الصور بيتم على جهازك، من غير تسجيل أو رفع الفيديو لسيرفر.</p><span>ON-DEVICE AI</span></div>
-</div>
-<aside class="sidebar">
-<section class="panel result-panel"><div class="section-heading"><h2>قراءة الحركة</h2><span class="live-dot"></span></div><div class="gesture-display"><div class="gesture-icon" id="gestureIcon">✋</div><h3 id="gestureName">في انتظار يدك</h3><p id="gestureDetail">ابدأ التتبّع عشان نقرأ إشارتك</p></div><div class="readout-grid"><div><span>الأصابع المرفوعة</span><strong id="fingerCount">— <small>/ 5</small></strong></div><div><span>حالة التتبّع</span><strong class="tracking-value" id="trackingValue">غير نشط</strong></div></div><div class="finger-indicators" id="fingerIndicators"><div><i></i>إبهام</div><div><i></i>سبابة</div><div><i></i>وسطى</div><div><i></i>بنصر</div><div><i></i>خنصر</div></div></section>
-<section class="panel settings-panel"><div class="section-heading"><h2>إعدادات العرض</h2><span class="settings-label">CUSTOMIZE</span></div><label class="setting"><span>إظهار نقاط اليد<small>رسم المفاصل وخطوط الاتصال</small></span><input type="checkbox" id="showPoints" checked><span class="toggle"></span></label><label class="setting"><span>انعكاس الكاميرا<small>عرض طبيعي زي المراية</small></span><input type="checkbox" id="mirror" checked><span class="toggle"></span></label><div class="quality-note"><span>↗</span> إيد واحدة، إضاءة واضحة، تتبّع أفضل.</div></section>
-</aside>
-</section>
-<section class="guide" id="guide"><div class="guide-header"><div><span class="eyebrow">لغة بسيطة، تفاعل أسرع</span><h2>جرّب تقولها بإيدك</h2></div><p>إشارات مبدئية يتعرّف عليها النظام <span>↓</span></p></div><div class="gesture-cards">
-<button class="gesture-card" data-gesture="open"><span class="card-number">01</span><span class="card-emoji">🖐️</span><h3>كف مفتوح</h3><p>افرد صوابعك الخمسة</p><span class="card-action">معاينة الإشارة ↗</span></button>
-<button class="gesture-card" data-gesture="fist"><span class="card-number">02</span><span class="card-emoji">✊</span><h3>قبضة مغلقة</h3><p>اقفل صوابعك جوه كفك</p><span class="card-action">معاينة الإشارة ↗</span></button>
-<button class="gesture-card" data-gesture="peace"><span class="card-number">03</span><span class="card-emoji">✌️</span><h3>علامة السلام</h3><p>ارفع السبابة والوسطى</p><span class="card-action">معاينة الإشارة ↗</span></button>
-<button class="gesture-card" data-gesture="point"><span class="card-number">04</span><span class="card-emoji">☝️</span><h3>إشارة بصباع</h3><p>ارفع صباع السبابة بس</p><span class="card-action">معاينة الإشارة ↗</span></button>
-<button class="gesture-card" data-gesture="pinch"><span class="card-number">05</span><span class="card-emoji">🤏</span><h3>ضمّ إصبعين</h3><p>قرّب الإبهام من السبابة</p><span class="card-action">معاينة الإشارة ↗</span></button>
-</div><p class="guide-note">التعرّف على الإشارات تقديري بقواعد هندسية، وليس ترجمة للغة الإشارة. دقته بتختلف حسب زاوية اليد والإضاءة.</p></section>
-</main><footer><span>إشارة <span class="footer-divider">/</span> تكنولوجيا تفهم حركتك.</span><span>POWERED BY MEDIAPIPE <span class="footer-dot">•</span> BUILT FOR THE WEB</span></footer>
-</div><script type="module" src="app.js"></script>
-</body></html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#0a1010" />
+    <title>إشارة — مختبر حركة اليد</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <svg class="svg-defs" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <symbol id="i-hand" viewBox="0 0 24 24">
+          <path
+            d="M8 12V5a1.5 1.5 0 0 1 3 0v6-8a1.5 1.5 0 0 1 3 0v8-6a1.5 1.5 0 0 1 3 0v7-4a1.5 1.5 0 0 1 3 0v7c0 5-3 7-7 7-3 0-5-2-7-5l-3-4a1.6 1.6 0 0 1 2.5-2L8 14"
+          />
+        </symbol>
+        <symbol id="i-camera" viewBox="0 0 24 24">
+          <rect x="3" y="6" width="18" height="14" rx="3" />
+          <path d="m8 6 1-3h6l1 3" />
+          <circle cx="12" cy="13" r="4" />
+        </symbol>
+        <symbol id="i-play" viewBox="0 0 24 24">
+          <path d="m9 5 10 7-10 7z" />
+        </symbol>
+        <symbol id="i-switch" viewBox="0 0 24 24">
+          <path d="M4 8h16l-4-4M20 16H4l4 4" />
+        </symbol>
+        <symbol id="i-shield" viewBox="0 0 24 24">
+          <path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6" />
+        </symbol>
+        <symbol id="i-expand" viewBox="0 0 24 24">
+          <path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5" />
+        </symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24">
+          <path d="M19 12H5m6-6-6 6 6 6" />
+        </symbol>
+      </defs>
+    </svg>
+    <div class="app-shell">
+      <header class="header">
+        <a class="brand" href="./"
+          ><span class="brand-mark"
+            ><svg><use href="#i-hand" /></svg></span
+          ><span>إشارة<span class="brand-en">ISHARA</span></span></a
+        >
+        <nav aria-label="التنقل">
+          <a class="nav-active" href="#workspace">مختبر التتبّع</a
+          ><a href="#guide">دليل الإشارات</a>
+        </nav>
+        <span class="header-tag"><span></span> يعمل داخل متصفحك</span>
+      </header>
+      <main>
+        <section class="intro">
+          <div>
+            <div class="eyebrow">
+              <span class="tiny-line"></span> تفاعل طبيعي. بدون لمس.
+            </div>
+            <h1>كل حركة، <span>لها معنى.</span></h1>
+            <p>
+              حوّل كاميرتك إلى مساحة تفاعلية. تتبّع إيديك مع بعض. لمسة تخفي
+              الفيديو، ولمسة تانية ترجّعه.
+            </p>
+          </div>
+          <div class="intro-number">
+            <span>42</span>
+            <div>نقطة تتبّع لليدين<br /><strong>إمكانيات بلا حدود</strong></div>
+          </div>
+        </section>
+        <section class="camera-access" aria-label="إذن الكاميرا">
+          <div class="access-copy">
+            <svg><use href="#i-shield" /></svg>
+            <div>
+              <strong>كاميرا حقيقية، بإذنك فقط</strong>
+              <p>
+                اضغط «السماح وتشغيل الكاميرا» ثم اختار «سماح / Allow» في رسالة
+                المتصفح. لو الإذن محفوظ، البث هيفتح مباشرة.
+              </p>
+              <p id="embedWarning" hidden>
+                أنت داخل معاينة مضمّنة؛ لو طلب الإذن ما ظهرش، افتح الموقع نفسه
+                في تبويب مستقل. معاينة الملف لا تتيح الكاميرا.
+              </p>
+            </div>
+          </div>
+          <div class="access-actions">
+            <span id="permissionState" role="status">الإذن: لم يُطلب بعد</span
+            ><a
+              id="openExternal"
+              class="button secondary compact"
+              target="_blank"
+              rel="noopener noreferrer"
+              hidden
+              >افتح الموقع في تبويب مستقل ↗</a
+            >
+          </div>
+        </section>
+        <section class="workspace" id="workspace" aria-label="مختبر تتبع اليد">
+          <div class="camera-column">
+            <div class="panel camera-panel" id="cameraPanel">
+              <div class="panel-toolbar">
+                <div class="panel-title">
+                  <svg><use href="#i-camera" /></svg> مساحة التتبّع
+                  <span class="small-pill">LIVE VIEW</span>
+                </div>
+                <div class="status" id="status">
+                  <span></span><b id="statusText">الكاميرا غير مفعّلة</b>
+                </div>
+              </div>
+              <div class="stage" id="stage">
+                <canvas
+                  id="canvas"
+                  aria-label="عرض الكاميرا ونقاط تتبع اليدين"
+                ></canvas
+                ><video id="video" autoplay muted playsinline hidden></video>
+                <div class="stage-corners"><i></i><i></i><i></i><i></i></div>
+                <div class="empty-state" id="emptyState">
+                  <div class="hand-orbit">
+                    <span class="orbit-dot"></span
+                    ><svg><use href="#i-hand" /></svg>
+                  </div>
+                  <div class="scan-label">READY WHEN YOU ARE</div>
+                  <h2>المساحة جاهزة لحركتك</h2>
+                  <p>
+                    هنطلب إذن الكاميرا من المتصفح أولًا.<br />بعد السماح، هتشوف
+                    بث كاميرتك الحقيقي هنا.
+                  </p>
+                  <button id="startCenter" class="button primary">
+                    <svg><use href="#i-camera" /></svg> السماح وتشغيل الكاميرا
+                    <svg class="arrow"><use href="#i-arrow" /></svg></button
+                  ><button id="demoCenter" class="text-button">
+                    معندكش كاميرا؟ جرّب العرض التوضيحي <span>↗</span>
+                  </button>
+                </div>
+                <div class="camera-badge" id="cameraBadge" hidden>
+                  <span></span><b>بث مباشر · كاميرا فعلية</b
+                  ><small id="cameraInfo"></small>
+                </div>
+                <div class="demo-badge" id="demoBadge" hidden>
+                  عرض توضيحي · بيانات محاكاة
+                </div>
+                <div class="stage-tip" id="stageTip" hidden>
+                  ارفع إيد أو إيدين داخل الإطار
+                </div>
+                <div class="stage-bottom">
+                  <span class="stage-coordinates">DUAL HAND TRACKING / 02</span
+                  ><button
+                    id="fullscreen"
+                    class="icon-button"
+                    title="ملء الشاشة"
+                    aria-label="ملء الشاشة"
+                  >
+                    <svg><use href="#i-expand" /></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="camera-controls">
+                <button id="startButton" class="button primary compact">
+                  <svg><use href="#i-camera" /></svg
+                  ><span>السماح وتشغيل الكاميرا</span></button
+                ><button
+                  id="switchCamera"
+                  class="button secondary compact"
+                  title="تبديل بين الكاميرا الأمامية والخلفية"
+                  disabled
+                >
+                  <svg><use href="#i-switch" /></svg><span>تبديل الكاميرا</span>
+                </button>
+                <div class="fps"><span id="fpsValue">—</span> FPS</div>
+              </div>
+            </div>
+            <section class="pinch-panel" aria-label="التحكم في إخفاء الفيديو">
+              <div class="pinch-title">
+                <span class="pinch-emoji">🤏</span>
+                <div>
+                  <h2>لمسة تخفيك. لمسة ترجّعك.</h2>
+                  <p>
+                    المس السبابة بالإبهام في أي إيد، افصلهم، وبعدين المس تاني.
+                  </p>
+                </div>
+                <span class="new-tag">جديد</span>
+              </div>
+              <div class="pinch-bottom">
+                <span id="visibilityState" role="status"
+                  >في انتظار تشغيل الكاميرا</span
+                ><button
+                  id="restoreVideo"
+                  class="button secondary compact"
+                  hidden
+                >
+                  إظهار الفيديو يدويًا ↩
+                </button>
+              </div>
+              <p id="pinchHint" class="pinch-hint">
+                الفيديو بس هو اللي بيختفي؛ الكاميرا والتتبّع بيفضلوا شغّالين
+                ونقاط اليدين بتظهر.
+              </p>
+            </section>
+            <div id="message" class="message" role="status" hidden></div>
+            <button id="retryModel" class="button secondary compact" hidden>
+              إعادة محاولة تحميل تتبّع اليد
+            </button>
+            <div class="privacy">
+              <svg><use href="#i-shield" /></svg>
+              <p>
+                <strong>خصوصيتك أولًا.</strong> تحليل الصور بيتم على جهازك، من
+                غير تسجيل أو رفع الفيديو لسيرفر.
+              </p>
+              <span>ON-DEVICE AI</span>
+            </div>
+          </div>
+          <aside class="sidebar">
+            <section class="panel result-panel">
+              <div class="section-heading">
+                <h2>قراءة اليدين</h2>
+                <span class="dual-count" id="handCount">0 / 2</span>
+              </div>
+              <div class="gesture-display">
+                <div class="gesture-icon" id="gestureIcon">👐</div>
+                <h3 id="gestureName">في انتظار إيديك</h3>
+                <p id="gestureDetail">إيد واحدة أو اتنين، التتبّع جاهز</p>
+              </div>
+              <div class="readout-grid">
+                <div>
+                  <span>مجموع الأصابع المرفوعة</span
+                  ><strong id="fingerCount">— <small>/ 10</small></strong>
+                </div>
+                <div>
+                  <span>حالة التتبّع</span
+                  ><strong class="tracking-value" id="trackingValue"
+                    >غير نشط</strong
+                  >
+                </div>
+              </div>
+              <div class="hand-readings">
+                <div class="hand-reading" id="hand0">
+                  <div class="hand-reading-heading">
+                    <span><i></i> يد ١</span
+                    ><b class="hand-gesture">غير ظاهرة</b
+                    ><strong class="hand-fingers">— / 5</strong>
+                  </div>
+                  <div class="mini-fingers">
+                    <span>إبهام</span><span>سبابة</span><span>وسطى</span
+                    ><span>بنصر</span><span>خنصر</span>
+                  </div>
+                </div>
+                <div class="hand-reading hand-blue" id="hand1">
+                  <div class="hand-reading-heading">
+                    <span><i></i> يد ٢</span
+                    ><b class="hand-gesture">غير ظاهرة</b
+                    ><strong class="hand-fingers">— / 5</strong>
+                  </div>
+                  <div class="mini-fingers">
+                    <span>إبهام</span><span>سبابة</span><span>وسطى</span
+                    ><span>بنصر</span><span>خنصر</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <section class="panel settings-panel">
+              <div class="section-heading">
+                <h2>إعدادات العرض</h2>
+                <span class="settings-label">CUSTOMIZE</span>
+              </div>
+              <label class="setting"
+                ><span
+                  >الإخفاء بلمسة إصبعين<small
+                    >لمسة للتبديل، مش طول فترة اللمس</small
+                  ></span
+                ><input type="checkbox" id="pinchEnabled" checked /><span
+                  class="toggle"
+                ></span></label
+              ><label class="setting"
+                ><span
+                  >إظهار نقاط اليدين<small
+                    >تظهر دائمًا لما الفيديو يكون مخفي</small
+                  ></span
+                ><input type="checkbox" id="showPoints" checked /><span
+                  class="toggle"
+                ></span></label
+              ><label class="setting"
+                ><span>انعكاس الكاميرا<small>عرض طبيعي زي المراية</small></span
+                ><input type="checkbox" id="mirror" checked /><span
+                  class="toggle"
+                ></span
+              ></label>
+              <div class="quality-note">
+                <span>↗</span> خلي الإيدين واضحين وبعيد عن بعض شوية.
+              </div>
+            </section>
+          </aside>
+        </section>
+        <section class="guide" id="guide">
+          <div class="guide-header">
+            <div>
+              <span class="eyebrow">لغة بسيطة، تفاعل أسرع</span>
+              <h2>جرّب تقولها بإيدك</h2>
+            </div>
+            <p>إشارات مبدئية يتعرّف عليها النظام <span>↓</span></p>
+          </div>
+          <div class="gesture-cards">
+            <button class="gesture-card" data-gesture="open">
+              <span class="card-number">01</span
+              ><span class="card-emoji">🖐️</span>
+              <h3>كف مفتوح</h3>
+              <p>افرد صوابعك الخمسة</p>
+              <span class="card-action">معاينة الإشارة ↗</span>
+            </button>
+            <button class="gesture-card" data-gesture="fist">
+              <span class="card-number">02</span
+              ><span class="card-emoji">✊</span>
+              <h3>قبضة مغلقة</h3>
+              <p>اقفل صوابعك جوه كفك</p>
+              <span class="card-action">معاينة الإشارة ↗</span>
+            </button>
+            <button class="gesture-card" data-gesture="peace">
+              <span class="card-number">03</span
+              ><span class="card-emoji">✌️</span>
+              <h3>علامة السلام</h3>
+              <p>ارفع السبابة والوسطى</p>
+              <span class="card-action">معاينة الإشارة ↗</span>
+            </button>
+            <button class="gesture-card" data-gesture="point">
+              <span class="card-number">04</span
+              ><span class="card-emoji">☝️</span>
+              <h3>إشارة بصباع</h3>
+              <p>ارفع صباع السبابة بس</p>
+              <span class="card-action">معاينة الإشارة ↗</span>
+            </button>
+            <button class="gesture-card" data-gesture="pinch">
+              <span class="card-number">05</span
+              ><span class="card-emoji">🤏</span>
+              <h3>لمسة الاختفاء</h3>
+              <p>المس، افصل، المس تاني</p>
+              <span class="card-action">معاينة الإشارة ↗</span>
+            </button>
+          </div>
+          <p class="guide-note">
+            التعرّف على الإشارات تقديري بقواعد هندسية، وليس ترجمة للغة الإشارة.
+            دقته بتختلف حسب زاوية اليد والإضاءة.
+          </p>
+        </section>
+      </main>
+      <footer>
+        <span
+          >إشارة <span class="footer-divider">/</span> تكنولوجيا تفهم
+          حركتك.</span
+        ><span
+          >POWERED BY MEDIAPIPE <span class="footer-dot">•</span> BUILT FOR THE
+          WEB</span
+        >
+      </footer>
+    </div>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
